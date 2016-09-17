@@ -19,7 +19,7 @@ GRADLE_TASK=${GRADLE_TASK-stage}
 
 print_env
 
-vendored_node_version=0.10.25
+vendored_node_version=0.12.15
 node_dir=$CACHE_DIR/node
 bower_app=$node_dir/lib/node_modules/bower
 gulp_app=$node_dir/lib/node_modules/gulp
