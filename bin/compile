@@ -19,35 +19,73 @@ GRADLE_TASK=${GRADLE_TASK-stage}
 
 print_env
 
-vendored_node_version=0.12.15
+vendored_node_version=6.6.0
 node_dir=$CACHE_DIR/node
-bower_app=$node_dir/lib/node_modules/bower
-gulp_app=$node_dir/lib/node_modules/gulp
+bower_app=$DIR/$VER/lib/node_modules/bower
+gulp_app=$DIR/$VER/lib/node_modules/gulp
 
-if [ ! -d $node_dir ]; then
+if [ ! -d $DIR/$VER ]; then
     status "Vendoring Node v$vendored_node_version to run Bower."
-    mkdir -p $node_dir
-    curl -s http://s3pository.heroku.com/node/v$vendored_node_version/node-v$vendored_node_version-linux-x64.tar.gz | tar xfz - -C $node_dir --strip-components=1
+    echo "Node Linux Installer by www.github.com/taaem"
+    echo "Need Root for installing NodeJS"
+
+    echo "Get Latest Version Number..."
+    {
+      wget --output-document=node-updater.html https://nodejs.org/dist/latest/
+
+      ARCH=$(uname -m)
+
+      if [ $ARCH = x86_64 ]
+      then
+        grep -o '>node-v.*-linux-x64.tar.gz' node-updater.html > node-cache.txt 2>&1
+
+        VER=$(grep -o 'node-v.*-linux-x64.tar.gz' node-cache.txt)
+      else
+        grep -o '>node-v.*-linux-x86.tar.gz' node-updater.html > node-cache.txt 2>&1
+        
+        VER=$(grep -o 'node-v.*-linux-x86.tar.gz' node-cache.txt)
+      fi
+      rm ./node-cache.txt
+      rm ./node-updater.html
+    } &> /dev/null
+
+    echo "Done"
+
+    DIR=$( cd "$( dirname $0 )" && pwd )
+
+    echo "Downloading latest stable Version $VER..."
+    {
+      wget https://nodejs.org/dist/latest/$VER -O $DIR/$VER
+    } &> /dev/null
+
+    echo "Done"
+
+    echo "Installing..."
+    cd /usr/local && tar --strip-components 1 -xzf $DIR/$VER
+
+    rm $DIR/$VER
+
+    echo "Finished installing!"
 fi
 
-ls $node_dir/bin
+ls $DIR/$VER
 
 if [ ! -d $bower_app ]; then
     status  "Installing bower"
-    $node_dir/bin/npm --silent -g install bower
+    $DIR/$VER/bin/npm --silent -g install bower
 fi
 
 status "installed bower"
 
-export bower_run=$node_dir/bin/bower
-PATH=$PATH:$node_dir/bin
+export bower_run=$DIR/$VER/bin/bower
+PATH=$PATH:$DIR/$VER/bin
   
 cd $BUILD_DIR
 status "Running: $bower_run --allow-root install"
 $bower_run --allow-root install
 
 status  "Installing npm dependencies"
-$node_dir/bin/npm --silent install
+$DIR/$VER/bin/npm --silent install
 
 if [ -e gulpfile.js ]; then
 
