@@ -32,7 +32,7 @@ fi
 
 pwd
 ls
-echo $node_dir
+echo $(ls node_dir)
 
 if [ ! -d $bower_app ]; then
     status  "Installing bower"
