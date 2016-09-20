@@ -21,8 +21,8 @@ print_env
 
 vendored_node_version=6.6.0
 node_dir=$CACHE_DIR/node
-bower_app=$DIR/$VER/lib/node_modules/bower
-gulp_app=$DIR/$VER/lib/node_modules/gulp
+bower_app=$node_dir/lib/node_modules/bower
+gulp_app=$node_dir/lib/node_modules/gulp
 
 if [ ! -d $DIR/$VER ]; then
     status "Vendoring Node v$vendored_node_version to run Bower."
@@ -77,7 +77,7 @@ fi
 
 status "installed bower"
 
-export bower_run=$DIR/$VER/bin/bower
+export bower_run=$DIR/$VERbin/bower
 PATH=$PATH:$DIR/$VER/bin
   
 cd $BUILD_DIR
