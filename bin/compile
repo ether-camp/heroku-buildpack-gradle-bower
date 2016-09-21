@@ -43,12 +43,6 @@ trap 'handle_failure' ERR
 
 [ -e "$BUILD_DIR/node_modules" ] && PREBUILD=true || PREBUILD=false
 
-### Failures that should be caught immediately
-
-fail_invalid_package_json "$BUILD_DIR"
-warn_prebuilt_modules "$BUILD_DIR"
-warn_missing_package_json "$BUILD_DIR"
-
 ### Compile
 
 create_env() {
