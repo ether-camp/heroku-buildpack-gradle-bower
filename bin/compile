@@ -52,9 +52,7 @@ create_env() {
   create_default_env
 }
 
-header "Creating runtime environment"
 create_env # can't pipe the whole thing because piping causes subshells, preventing exports
-list_node_config | output "$LOG_FILE"
 
 install_bins() {
   local node_engine=$(read_json "$BUILD_DIR/package.json" ".engines.node")
